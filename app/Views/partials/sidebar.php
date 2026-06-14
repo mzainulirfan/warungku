@@ -1,9 +1,12 @@
 <?php
 $role = session()->get('user_role');
+$roleLabel = $role === 'admin' ? 'Administrator' : 'Kasir';
 $currentPath = trim(uri_string(), '/');
 
 $isActive = static function (string $path) use ($currentPath): string {
-    return $currentPath === trim($path, '/') ? ' active' : '';
+    $path = trim($path, '/');
+
+    return $currentPath === $path || str_starts_with($currentPath, $path . '/') ? ' active' : '';
 };
 ?>
 
@@ -67,7 +70,7 @@ $isActive = static function (string $path) use ($currentPath): string {
         <span class="avatar"><?= esc(strtoupper(substr((string) session()->get('user_name'), 0, 1))) ?></span>
         <div>
             <strong><?= esc(session()->get('user_name')) ?></strong>
-            <small><?= esc(session()->get('user_role')) ?></small>
+            <small><?= esc($roleLabel) ?></small>
         </div>
     </div>
 </aside>

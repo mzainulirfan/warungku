@@ -17,8 +17,10 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
 
     $routes->group('', ['filter' => 'role:admin'], static function ($routes) {
         $routes->get('/product', 'ProductController::index');
+        $routes->get('/product/template', 'ProductController::template');
         $routes->get('/product/create', 'ProductController::create');
         $routes->post('/product/store', 'ProductController::store');
+        $routes->post('/product/import', 'ProductController::import');
         $routes->get('/product/edit/(:num)', 'ProductController::edit/$1');
         $routes->post('/product/update/(:num)', 'ProductController::update/$1');
         $routes->post('/product/delete/(:num)', 'ProductController::delete/$1');

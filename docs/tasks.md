@@ -53,9 +53,9 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Aktifkan CSRF protection.
 - [x] Test login sukses redirect ke dashboard.
 - [x] Test login gagal menampilkan error.
-- [ ] Test user nonaktif tidak bisa login.
+- [x] Test user nonaktif tidak bisa login.
 - [x] Test akses dashboard tanpa login redirect ke login.
-- [ ] Test kasir tidak bisa akses route admin.
+- [x] Test kasir tidak bisa akses route admin.
 
 ## Desain UI - Light Dashboard
 
@@ -108,66 +108,66 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 ### User
 
 - [x] Buat `UserController` placeholder.
-- [ ] Implementasikan `UserController` CRUD penuh.
-- [ ] Implementasikan `index`.
-- [ ] Implementasikan `create`.
-- [ ] Implementasikan `store`.
-- [ ] Implementasikan `edit`.
-- [ ] Implementasikan `update`.
-- [ ] Implementasikan `toggle`.
-- [ ] Buat view `user/index.php`.
-- [ ] Buat view `user/create.php`.
-- [ ] Buat view `user/edit.php`.
-- [ ] Validasi nama, email, password, konfirmasi password, role, dan status.
-- [ ] Hash password sebelum simpan.
-- [ ] Cegah admin menonaktifkan akun sendiri.
-- [ ] Test CRUD user sebagai admin.
+- [x] Implementasikan `UserController` CRUD penuh.
+- [x] Implementasikan `index`.
+- [x] Implementasikan `create`.
+- [x] Implementasikan `store`.
+- [x] Implementasikan `edit`.
+- [x] Implementasikan `update`.
+- [x] Implementasikan `toggle`.
+- [x] Buat view `user/index.php`.
+- [x] Buat view `user/create.php`.
+- [x] Buat view `user/edit.php`.
+- [x] Validasi nama, email, password, konfirmasi password, role, dan status.
+- [x] Hash password sebelum simpan.
+- [x] Cegah admin menonaktifkan akun sendiri.
+- [x] Test CRUD user sebagai admin.
 
 ### Setting
 
-- [ ] Buat `SettingModel`.
+- [x] Buat `SettingModel`.
 - [x] Buat `SettingController` placeholder.
-- [ ] Implementasikan `SettingController` penuh.
-- [ ] Implementasikan `index`.
-- [ ] Implementasikan `update`.
-- [ ] Buat view `setting/index.php`.
-- [ ] Validasi setting.
-- [ ] Test update setting sebagai admin.
+- [x] Implementasikan `SettingController` penuh.
+- [x] Implementasikan `index`.
+- [x] Implementasikan `update`.
+- [x] Buat view `setting/index.php`.
+- [x] Validasi setting.
+- [x] Test update setting sebagai admin.
 
 ## Fase 4 - POS dan Transaksi
 
-- [ ] Buat `TransactionModel`.
-- [ ] Buat `TransactionItemModel`.
+- [x] Buat `TransactionModel`.
+- [x] Buat `TransactionItemModel`.
 - [x] Buat `TransactionController` placeholder.
-- [ ] Implementasikan `TransactionController` transaksi penuh.
-- [ ] Implementasikan method `pos`.
-- [ ] Implementasikan method `store`.
-- [ ] Implementasikan method `history`.
-- [ ] Implementasikan method `detail`.
-- [ ] Buat view `transaction/pos.php`.
-- [ ] Buat layout POS 2 kolom.
-- [ ] Tampilkan produk aktif saja.
-- [ ] Buat search produk di POS.
-- [ ] Buat filter kategori di POS.
-- [ ] Implementasikan keranjang dengan vanilla JS.
-- [ ] Implementasikan tambah item ke keranjang.
-- [ ] Implementasikan ubah qty item.
-- [ ] Implementasikan hapus item.
-- [ ] Hitung subtotal, total, pembayaran, dan kembalian otomatis.
-- [ ] Kirim transaksi via AJAX atau POST biasa.
-- [ ] Sertakan CSRF token pada request transaksi.
-- [ ] Validasi keranjang tidak kosong.
-- [ ] Validasi pembayaran cukup.
-- [ ] Generate `invoice_no` unik.
-- [ ] Simpan transaksi dalam database transaction.
-- [ ] Simpan item transaksi dengan snapshot nama dan harga.
-- [ ] Tampilkan struk ringkas setelah transaksi berhasil.
-- [ ] Buat view `transaction/history.php`.
-- [ ] Buat filter riwayat berdasarkan tanggal.
-- [ ] Buat view `transaction/detail.php`.
-- [ ] Terapkan aturan admin semua transaksi, kasir transaksi miliknya.
-- [ ] Test transaksi sebagai admin.
-- [ ] Test transaksi sebagai kasir.
+- [x] Implementasikan `TransactionController` transaksi penuh.
+- [x] Implementasikan method `pos`.
+- [x] Implementasikan method `store`.
+- [x] Implementasikan method `history`.
+- [x] Implementasikan method `detail`.
+- [x] Buat view `transaction/pos.php`.
+- [x] Buat layout POS 2 kolom.
+- [x] Tampilkan produk aktif saja.
+- [x] Buat search produk di POS.
+- [x] Buat filter kategori di POS.
+- [x] Implementasikan keranjang dengan vanilla JS.
+- [x] Implementasikan tambah item ke keranjang.
+- [x] Implementasikan ubah qty item.
+- [x] Implementasikan hapus item.
+- [x] Hitung subtotal, total, pembayaran, dan kembalian otomatis.
+- [x] Kirim transaksi via AJAX atau POST biasa.
+- [x] Sertakan CSRF token pada request transaksi.
+- [x] Validasi keranjang tidak kosong.
+- [x] Validasi pembayaran cukup.
+- [x] Generate `invoice_no` unik.
+- [x] Simpan transaksi dalam database transaction.
+- [x] Simpan item transaksi dengan snapshot nama dan harga.
+- [x] Tampilkan struk ringkas setelah transaksi berhasil.
+- [x] Buat view `transaction/history.php`.
+- [x] Buat filter riwayat berdasarkan tanggal.
+- [x] Buat view `transaction/detail.php`.
+- [x] Terapkan aturan admin semua transaksi, kasir transaksi miliknya.
+- [x] Test transaksi sebagai admin.
+- [x] Test transaksi sebagai kasir.
 
 ## Fase 5 - Dashboard dan Polish
 
@@ -183,29 +183,29 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Pastikan sidebar menampilkan menu sesuai role.
 - [x] Pastikan flash message tampil konsisten.
 - [x] Pastikan semua halaman punya title.
-- [ ] Review semua form POST memiliki CSRF token.
-- [ ] Review semua output dinamis memakai `esc()`.
-- [ ] Test validasi form kosong.
-- [ ] Test akses role secara manual.
-- [ ] Test upload gambar valid dan invalid.
-- [ ] Test mode production tidak menampilkan debug output.
-- [ ] Set `CI_ENVIRONMENT = production` untuk konfigurasi production.
+- [x] Review semua form POST memiliki CSRF token.
+- [x] Review semua output dinamis memakai `esc()`.
+- [x] Test validasi form kosong.
+- [x] Test akses role secara manual.
+- [x] Test upload gambar valid dan invalid.
+- [x] Test mode production tidak menampilkan debug output.
+- [x] Set `CI_ENVIRONMENT = production` untuk konfigurasi production.
 
 ## Acceptance Checklist
 
 - [x] Admin bisa login.
-- [ ] Kasir bisa login.
-- [ ] User nonaktif tidak bisa login.
+- [x] Kasir bisa login.
+- [x] User nonaktif tidak bisa login.
 - [x] Admin bisa mengelola produk.
-- [ ] Admin bisa mengelola kategori.
-- [ ] Admin bisa mengelola user.
-- [ ] Admin bisa mengubah setting.
-- [ ] Kasir tidak bisa membuka menu admin.
-- [ ] Admin dan kasir bisa membuat transaksi.
-- [ ] Total transaksi dan kembalian benar.
-- [ ] Riwayat transaksi tersimpan.
-- [ ] Detail transaksi menampilkan snapshot nama dan harga produk.
+- [x] Admin bisa mengelola kategori.
+- [x] Admin bisa mengelola user.
+- [x] Admin bisa mengubah setting.
+- [x] Kasir tidak bisa membuka menu admin.
+- [x] Admin dan kasir bisa membuat transaksi.
+- [x] Total transaksi dan kembalian benar.
+- [x] Riwayat transaksi tersimpan.
+- [x] Detail transaksi menampilkan snapshot nama dan harga produk.
 - [x] Dashboard menampilkan data sesuai role.
 - [x] Tidak ada password plain text di database.
-- [ ] Tidak ada query raw dengan string concatenation dari input user.
-- [ ] Tidak ada output user-generated tanpa `esc()`.
+- [x] Tidak ada query raw dengan string concatenation dari input user.
+- [x] Tidak ada output user-generated tanpa `esc()`.
