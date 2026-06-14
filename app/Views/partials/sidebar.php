@@ -16,6 +16,9 @@ $isActive = static function (string $path) use ($currentPath): string {
             <strong><?= esc(setting('store_name', 'Warung Sederhana')) ?></strong>
             <small>POS Warung</small>
         </div>
+        <button class="sidebar-close" type="button" aria-label="Tutup menu" data-sidebar-close>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
     </div>
 
     <div class="sidebar-search">

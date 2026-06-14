@@ -70,17 +70,17 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 
 ### Kategori
 
-- [ ] Buat `CategoryModel`.
+- [x] Buat `CategoryModel`.
 - [x] Buat `CategoryController` placeholder.
-- [ ] Implementasikan `CategoryController` CRUD penuh.
-- [ ] Implementasikan `index`.
-- [ ] Implementasikan `store`.
-- [ ] Implementasikan `update`.
-- [ ] Implementasikan `delete`.
-- [ ] Buat view `category/index.php`.
-- [ ] Validasi nama kategori.
-- [ ] Cegah hapus kategori yang masih dipakai produk.
-- [ ] Test CRUD kategori sebagai admin.
+- [x] Implementasikan `CategoryController` CRUD penuh.
+- [x] Implementasikan `index`.
+- [x] Implementasikan `store`.
+- [x] Implementasikan `update`.
+- [x] Implementasikan `delete`.
+- [x] Buat view `category/index.php`.
+- [x] Validasi nama kategori.
+- [x] Cegah hapus kategori yang masih dipakai produk.
+- [x] Test CRUD kategori sebagai admin.
 
 ### Produk
 
