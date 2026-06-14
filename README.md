@@ -1,69 +1,145 @@
-# CodeIgniter 4 Application Starter
+# Warungku - POS Warung Sederhana
 
-## What is CodeIgniter?
+Warungku adalah aplikasi POS sederhana berbasis CodeIgniter 4 untuk warung makan, toko kecil, atau kedai. Fokus awal aplikasi ini adalah login berbasis role, fondasi database SQLite, dashboard ringkas, dan struktur fitur untuk kasir, produk, kategori, user, serta setting.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Status Saat Ini
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+Sudah tersedia:
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+- CodeIgniter 4 app starter.
+- SQLite database schema lewat migration.
+- Seeder awal untuk admin, setting toko, dan kategori.
+- Login/logout admin.
+- Auth filter dan role filter.
+- Dashboard awal dengan light dashboard UI.
+- Placeholder halaman POS, transaksi, produk, kategori, user, dan setting.
+- Dokumentasi PRD dan breakdown di folder `docs/`.
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+Belum tersedia:
 
-## Installation & updates
+- CRUD penuh produk, kategori, user, dan setting.
+- POS transaksi penuh.
+- Riwayat dan detail transaksi.
+- Laporan/dashboard final.
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+## Tech Stack
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+- PHP 8.2+
+- CodeIgniter 4.7+
+- SQLite3
+- CI4 native views
+- Custom CSS light grayscale theme
+- Vanilla JavaScript
 
-## Setup
+## Setup Lokal
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+Install dependency:
 
-## Important Change with index.php
+```bash
+composer install
+```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+Copy file environment:
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+```bash
+cp env .env
+```
 
-**Please** read the user guide for a better explanation of how CI4 works!
+Untuk Windows PowerShell:
 
-## Repository Management
+```powershell
+Copy-Item env .env
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+Edit `.env`:
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+```ini
+CI_ENVIRONMENT = development
+app.baseURL = 'http://localhost:8080/'
 
-## Server Requirements
+database.default.database = D:\dev\php\ci4\warungku\writable\db\warung.db
+database.default.DBDriver = SQLite3
+database.default.DBPrefix =
+database.default.foreignKeys = true
+database.default.busyTimeout = 1000
+```
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+Sesuaikan path `database.default.database` dengan lokasi project lokal masing-masing. File `.env` tidak dipush ke Git.
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+Siapkan database:
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+```bash
+mkdir -p writable/db
+php spark migrate
+php spark db:seed InitialSeeder
+```
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+Untuk Windows PowerShell:
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+```powershell
+New-Item -ItemType Directory -Force writable\db
+php spark migrate
+php spark db:seed InitialSeeder
+```
+
+Jalankan server:
+
+```bash
+php spark serve --host 127.0.0.1 --port 8080
+```
+
+Buka:
+
+```text
+http://localhost:8080/login
+```
+
+## Login Awal
+
+```text
+Email: admin@warung.com
+Password: admin1234
+```
+
+Ganti password default setelah fitur user management tersedia.
+
+## Struktur Dokumentasi
+
+- `prd.md`: Product Requirements Document utama.
+- `docs/desain.md`: desain aplikasi, database, UI, dan routing.
+- `docs/requirements.md`: functional dan non-functional requirements.
+- `docs/tasks.md`: checklist implementasi per fase.
+- `docs/rules.md`: aturan implementasi, security, UI, dan setup lokal.
+- `inpirasi.html`: referensi visual light dashboard.
+
+## Perintah Verifikasi
+
+Lint PHP:
+
+```bash
+Get-ChildItem -Recurse -Filter *.php app | ForEach-Object { php -l $_.FullName }
+```
+
+Lihat route:
+
+```bash
+php spark routes
+```
+
+Reset database lokal dari awal:
+
+```bash
+php spark migrate:refresh
+php spark db:seed InitialSeeder
+```
+
+## Catatan Git
+
+File berikut tidak dipush:
+
+- `.env`
+- `vendor/`
+- `writable/db/warung.db`
+- runtime cache/log/session/debugbar di `writable/`
+
+Database dibuat ulang melalui migration dan seeder.
