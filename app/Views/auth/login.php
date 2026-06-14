@@ -1,6 +1,8 @@
 <?= $this->extend('layouts/auth') ?>
 
 <?= $this->section('content') ?>
+<?php $errors = session()->getFlashdata('errors') ?? []; ?>
+
 <section class="login-shell">
     <div class="login-hero">
         <div class="auth-logo">
@@ -39,17 +41,43 @@
             <p>Gunakan akun yang dibuat oleh admin untuk masuk ke aplikasi.</p>
         </div>
 
-        <form method="post" action="<?= site_url('login') ?>" class="form-stack">
+        <form method="post" action="<?= site_url('login') ?>" class="form-stack" novalidate>
             <?= csrf_field() ?>
 
             <div class="form-group">
                 <label class="form-label" for="email">Email</label>
-                <input class="form-input" type="email" id="email" name="email" value="<?= esc(old('email')) ?>" placeholder="admin@warung.com" autocomplete="email" required autofocus>
+                <input
+                    class="form-input<?= isset($errors['email']) ? ' is-invalid' : '' ?>"
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="<?= esc(old('email')) ?>"
+                    placeholder="admin@warung.com"
+                    autocomplete="email"
+                    aria-invalid="<?= isset($errors['email']) ? 'true' : 'false' ?>"
+                    aria-describedby="<?= isset($errors['email']) ? 'email-error' : '' ?>"
+                    autofocus
+                >
+                <?php if (isset($errors['email'])): ?>
+                    <span class="form-error" id="email-error"><?= esc($errors['email']) ?></span>
+                <?php endif ?>
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="password">Password</label>
-                <input class="form-input" type="password" id="password" name="password" placeholder="Masukkan password" autocomplete="current-password" required>
+                <input
+                    class="form-input<?= isset($errors['password']) ? ' is-invalid' : '' ?>"
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Masukkan password"
+                    autocomplete="current-password"
+                    aria-invalid="<?= isset($errors['password']) ? 'true' : 'false' ?>"
+                    aria-describedby="<?= isset($errors['password']) ? 'password-error' : '' ?>"
+                >
+                <?php if (isset($errors['password'])): ?>
+                    <span class="form-error" id="password-error"><?= esc($errors['password']) ?></span>
+                <?php endif ?>
             </div>
 
             <button class="btn btn-primary btn-block" type="submit">Masuk ke Dashboard</button>

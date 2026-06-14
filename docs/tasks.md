@@ -64,7 +64,7 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Buat topbar sticky dengan breadcrumb dan action.
 - [x] Ubah dashboard menjadi KPI cards putih dan tabel bersih.
 - [x] Ubah login menjadi card putih terpusat.
-- [ ] Terapkan komponen light theme ke halaman CRUD setelah Fase 3 dibuat.
+- [x] Terapkan komponen light theme ke halaman CRUD setelah Fase 3 dibuat.
 
 ## Fase 3 - CRUD Master Data
 
@@ -84,26 +84,26 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 
 ### Produk
 
-- [ ] Buat `ProductModel`.
+- [x] Buat `ProductModel`.
 - [x] Buat `ProductController` placeholder.
-- [ ] Implementasikan `ProductController` CRUD penuh.
-- [ ] Implementasikan `index`.
-- [ ] Implementasikan filter kategori.
-- [ ] Implementasikan search nama produk.
-- [ ] Implementasikan pagination.
-- [ ] Implementasikan `create`.
-- [ ] Implementasikan `store`.
-- [ ] Implementasikan upload gambar.
-- [ ] Implementasikan `edit`.
-- [ ] Implementasikan `update`.
-- [ ] Implementasikan `delete`.
-- [ ] Implementasikan `toggle`.
-- [ ] Buat view `product/index.php`.
-- [ ] Buat view `product/create.php`.
-- [ ] Buat view `product/edit.php`.
-- [ ] Validasi semua field produk.
-- [ ] Cegah hapus produk yang sudah pernah masuk transaksi.
-- [ ] Test CRUD produk sebagai admin.
+- [x] Implementasikan `ProductController` CRUD penuh.
+- [x] Implementasikan `index`.
+- [x] Implementasikan filter kategori.
+- [x] Implementasikan search nama produk.
+- [x] Implementasikan pagination.
+- [x] Implementasikan `create`.
+- [x] Implementasikan `store`.
+- [x] Implementasikan upload gambar.
+- [x] Implementasikan `edit`.
+- [x] Implementasikan `update`.
+- [x] Implementasikan `delete`.
+- [x] Implementasikan `toggle`.
+- [x] Buat view `product/index.php`.
+- [x] Buat view `product/create.php`.
+- [x] Buat view `product/edit.php`.
+- [x] Validasi semua field produk.
+- [x] Cegah hapus produk yang sudah pernah masuk transaksi.
+- [x] Test CRUD produk sebagai admin.
 
 ### User
 
@@ -196,7 +196,7 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Admin bisa login.
 - [ ] Kasir bisa login.
 - [ ] User nonaktif tidak bisa login.
-- [ ] Admin bisa mengelola produk.
+- [x] Admin bisa mengelola produk.
 - [ ] Admin bisa mengelola kategori.
 - [ ] Admin bisa mengelola user.
 - [ ] Admin bisa mengubah setting.

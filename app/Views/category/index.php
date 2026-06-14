@@ -1,6 +1,8 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
+<?php $errors = session()->getFlashdata('errors') ?? []; ?>
+
 <section class="page-header">
     <div>
         <h2>Kategori</h2>
@@ -24,21 +26,26 @@
                 method="post"
                 action="<?= $editCategory ? site_url('category/update/' . $editCategory->id) : site_url('category/store') ?>"
                 class="form-stack"
+                novalidate
             >
                 <?= csrf_field() ?>
 
                 <div class="form-group">
                     <label class="form-label" for="name">Nama Kategori</label>
                     <input
-                        class="form-input"
+                        class="form-input<?= isset($errors['name']) ? ' is-invalid' : '' ?>"
                         type="text"
                         id="name"
                         name="name"
                         value="<?= esc(old('name', $editCategory->name ?? '')) ?>"
                         placeholder="Contoh: Makanan"
                         maxlength="50"
-                        required
+                        aria-invalid="<?= isset($errors['name']) ? 'true' : 'false' ?>"
+                        aria-describedby="<?= isset($errors['name']) ? 'name-error' : '' ?>"
                     >
+                    <?php if (isset($errors['name'])): ?>
+                        <span class="form-error" id="name-error"><?= esc($errors['name']) ?></span>
+                    <?php endif ?>
                 </div>
 
                 <button class="btn btn-primary" type="submit">

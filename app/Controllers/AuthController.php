@@ -20,8 +20,21 @@ class AuthController extends BaseController
     public function processLogin()
     {
         $rules = [
-            'email'    => 'required|valid_email',
-            'password' => 'required',
+            'email' => [
+                'label'  => 'Email',
+                'rules'  => 'required|valid_email',
+                'errors' => [
+                    'required'    => 'Email wajib diisi.',
+                    'valid_email' => 'Format email tidak valid.',
+                ],
+            ],
+            'password' => [
+                'label'  => 'Password',
+                'rules'  => 'required',
+                'errors' => [
+                    'required' => 'Password wajib diisi.',
+                ],
+            ],
         ];
 
         if (! $this->validate($rules)) {

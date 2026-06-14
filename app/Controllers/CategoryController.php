@@ -37,7 +37,11 @@ class CategoryController extends BaseController
     public function store()
     {
         $rules = [
-            'name' => 'required|min_length[2]|max_length[50]|is_unique[categories.name]',
+            'name' => [
+                'label'  => 'Nama Kategori',
+                'rules'  => 'required|min_length[2]|max_length[50]|is_unique[categories.name]',
+                'errors' => $this->validationMessages(),
+            ],
         ];
 
         if (! $this->validate($rules)) {
@@ -62,7 +66,11 @@ class CategoryController extends BaseController
         }
 
         $rules = [
-            'name' => "required|min_length[2]|max_length[50]|is_unique[categories.name,id,{$category->id}]",
+            'name' => [
+                'label'  => 'Nama Kategori',
+                'rules'  => "required|min_length[2]|max_length[50]|is_unique[categories.name,id,{$category->id}]",
+                'errors' => $this->validationMessages(),
+            ],
         ];
 
         if (! $this->validate($rules)) {
@@ -97,5 +105,15 @@ class CategoryController extends BaseController
         $this->categoryModel->delete($category->id);
 
         return redirect()->to('/category')->with('success', 'Kategori berhasil dihapus.');
+    }
+
+    private function validationMessages(): array
+    {
+        return [
+            'required'   => 'Nama kategori wajib diisi.',
+            'min_length' => 'Nama kategori minimal 2 karakter.',
+            'max_length' => 'Nama kategori maksimal 50 karakter.',
+            'is_unique'  => 'Nama kategori sudah digunakan.',
+        ];
     }
 }
