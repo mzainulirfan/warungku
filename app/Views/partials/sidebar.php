@@ -44,6 +44,10 @@ $isActive = static function (string $path) use ($currentPath): string {
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"></path><path d="m7 14 4-4 3 3 5-6"></path></svg>
             Transaksi
         </a>
+        <a class="nav-item<?= $isActive('report') ?>" href="<?= site_url('report') ?>">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-3"></path></svg>
+            Laporan
+        </a>
 
         <?php if ($role === 'admin'): ?>
             <span class="nav-section">Admin</span>

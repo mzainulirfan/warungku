@@ -63,6 +63,9 @@ Yang tidak dikerjakan di versi ini:
 - `users.email` harus unique.
 - `categories.name` harus unique.
 - `transactions.invoice_no` harus unique.
+- `products.barcode` harus unique jika terisi.
+- Barcode otomatis memakai format `WRG-` ditambah ID produk padded 8 digit.
+- Cetak label barcode hanya mencetak area label, bukan seluruh halaman detail.
 - `transaction_items.product_name` dan `transaction_items.price` wajib menyimpan snapshot saat transaksi.
 - Produk yang sudah dipakai transaksi tidak boleh dihapus permanen tanpa pertimbangan histori.
 - Kategori yang masih dipakai produk tidak boleh dihapus.
@@ -87,6 +90,7 @@ Yang tidak dikerjakan di versi ini:
 - Route admin wajib memakai filter role admin.
 - Admin punya akses penuh.
 - Kasir hanya boleh akses dashboard terbatas, POS, dan riwayat transaksinya sendiri.
+- Kasir hanya boleh melihat laporan dari transaksinya sendiri.
 - Controller tetap wajib melakukan pengecekan tambahan untuk operasi sensitif.
 - Admin tidak boleh menonaktifkan akunnya sendiri.
 
@@ -96,6 +100,8 @@ Yang tidak dikerjakan di versi ini:
 - Jika validasi gagal, redirect kembali dengan input lama dan error.
 - Harga tidak boleh negatif.
 - Stok tidak boleh negatif.
+- Barcode produk opsional, maksimal 64 karakter, dan tidak boleh duplikat.
+- Export produk harus memakai header yang kompatibel dengan import produk.
 - Qty transaksi minimal 1.
 - Pembayaran harus lebih besar atau sama dengan total.
 - Keranjang transaksi tidak boleh kosong.
@@ -156,7 +162,11 @@ Yang tidak dikerjakan di versi ini:
 ## POS Rules
 
 - POS hanya menampilkan produk aktif.
+- POS boleh mencari produk berdasarkan nama atau barcode.
+- Scan barcode POS harus melakukan lookup produk aktif dengan stok tersedia.
 - Item keranjang harus berasal dari produk yang valid.
+- Item hasil scan barcode harus tetap divalidasi ulang saat transaksi disimpan.
+- Keranjang boleh disimpan di localStorage, tetapi database tetap menjadi sumber kebenaran saat checkout.
 - Total dihitung dari subtotal seluruh item.
 - Subtotal dihitung dari harga snapshot dikali qty.
 - Kembalian dihitung dari pembayaran dikurangi total.
@@ -164,6 +174,19 @@ Yang tidak dikerjakan di versi ini:
 - `invoice_no` harus unik.
 - Penyimpanan transaksi dan item harus dilakukan dalam database transaction.
 - Jika penyimpanan item gagal, header transaksi tidak boleh tersimpan sendiri.
+
+## Dashboard Rules
+
+- Produk stok rendah adalah produk aktif dengan stok kurang dari atau sama dengan 5.
+- Widget stok rendah hanya ditampilkan untuk admin.
+- Link stok rendah dari dashboard harus membuka daftar produk dengan filter stok rendah aktif.
+
+## Report Rules
+
+- Laporan admin boleh membaca semua transaksi.
+- Laporan kasir hanya boleh membaca transaksi miliknya sendiri.
+- Filter laporan memakai tanggal valid format `YYYY-MM-DD`.
+- Export CSV harus mengikuti scope role yang sama dengan tampilan laporan.
 
 ## Testing Rules
 

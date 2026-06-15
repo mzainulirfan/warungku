@@ -39,65 +39,77 @@ class ProductCatalogSeeder extends Seeder
             $categoryIds[$name] = (int) $existing->id;
         }
 
-        $products = [
-            ['Makanan Berat', 'Nasi Goreng Kampung', 15000, 25],
-            ['Makanan Berat', 'Nasi Ayam Geprek', 18000, 20],
-            ['Makanan Berat', 'Nasi Telur Balado', 13000, 18],
-            ['Makanan Berat', 'Nasi Pecel', 14000, 16],
-            ['Makanan Berat', 'Soto Ayam', 16000, 15],
-            ['Minuman Dingin', 'Es Teh Manis', 5000, 40],
-            ['Minuman Dingin', 'Es Jeruk', 7000, 35],
-            ['Minuman Dingin', 'Air Mineral 600ml', 4000, 60],
-            ['Minuman Dingin', 'Susu Kotak Cokelat', 6500, 32],
-            ['Minuman Dingin', 'Minuman Soda Kaleng', 9000, 24],
-            ['Minuman Panas', 'Teh Panas', 4000, 30],
-            ['Minuman Panas', 'Kopi Hitam', 6000, 30],
-            ['Minuman Panas', 'Kopi Susu', 8000, 28],
-            ['Minuman Panas', 'Wedang Jahe', 9000, 20],
-            ['Minuman Panas', 'Cokelat Panas', 10000, 18],
-            ['Snack', 'Keripik Singkong', 8000, 45],
-            ['Snack', 'Keripik Kentang', 10000, 35],
-            ['Snack', 'Kacang Atom', 7000, 40],
-            ['Snack', 'Biskuit Cokelat', 8500, 38],
-            ['Snack', 'Wafer Vanilla', 7500, 34],
-            ['Roti dan Kue', 'Roti Tawar', 14000, 22],
-            ['Roti dan Kue', 'Roti Cokelat', 6000, 30],
-            ['Roti dan Kue', 'Donat Gula', 5000, 28],
-            ['Roti dan Kue', 'Brownies Potong', 9000, 20],
-            ['Roti dan Kue', 'Kue Lapis', 4500, 25],
-            ['Sembako', 'Beras 1kg', 14500, 50],
-            ['Sembako', 'Gula Pasir 1kg', 16000, 45],
-            ['Sembako', 'Minyak Goreng 1L', 17500, 42],
-            ['Sembako', 'Telur Ayam 1kg', 29000, 30],
-            ['Sembako', 'Tepung Terigu 1kg', 12000, 35],
-            ['Bumbu Dapur', 'Garam Dapur', 4000, 60],
-            ['Bumbu Dapur', 'Merica Bubuk', 5500, 45],
-            ['Bumbu Dapur', 'Ketumbar Bubuk', 5000, 44],
-            ['Bumbu Dapur', 'Kecap Manis Sachet', 2500, 80],
-            ['Bumbu Dapur', 'Saus Sambal Botol', 12000, 25],
-            ['Kopi dan Teh', 'Kopi Sachet Original', 2000, 100],
-            ['Kopi dan Teh', 'Kopi Sachet Susu', 2500, 95],
-            ['Kopi dan Teh', 'Teh Celup Isi 25', 9000, 30],
-            ['Kopi dan Teh', 'Krimer Sachet', 1500, 80],
-            ['Kopi dan Teh', 'Gula Aren Sachet', 3000, 55],
-            ['Mie Instan', 'Mie Goreng Instan', 3500, 90],
-            ['Mie Instan', 'Mie Kuah Soto', 3500, 85],
-            ['Mie Instan', 'Mie Kari Ayam', 3500, 82],
-            ['Mie Instan', 'Mie Pedas', 4000, 75],
-            ['Mie Instan', 'Bihun Instan', 4500, 60],
-            ['Perlengkapan Harian', 'Sabun Mandi Batang', 5000, 40],
-            ['Perlengkapan Harian', 'Sampo Sachet', 1500, 90],
-            ['Perlengkapan Harian', 'Pasta Gigi Kecil', 7000, 32],
-            ['Perlengkapan Harian', 'Tisu Gulung', 6000, 36],
-            ['Perlengkapan Harian', 'Deterjen Sachet', 2500, 70],
+        $productNames = [
+            'Nasi Goreng Kampung',
+            'Nasi Ayam Geprek',
+            'Nasi Telur Balado',
+            'Nasi Pecel',
+            'Soto Ayam',
+            'Es Teh Manis',
+            'Es Jeruk',
+            'Air Mineral 600ml',
+            'Susu Kotak Cokelat',
+            'Minuman Soda Kaleng',
+            'Teh Panas',
+            'Kopi Hitam',
+            'Kopi Susu',
+            'Wedang Jahe',
+            'Cokelat Panas',
+            'Keripik Singkong',
+            'Keripik Kentang',
+            'Kacang Atom',
+            'Biskuit Cokelat',
+            'Wafer Vanilla',
+            'Roti Tawar',
+            'Roti Cokelat',
+            'Donat Gula',
+            'Brownies Potong',
+            'Kue Lapis',
+            'Beras 1kg',
+            'Gula Pasir 1kg',
+            'Minyak Goreng 1L',
+            'Telur Ayam 1kg',
+            'Tepung Terigu 1kg',
+            'Garam Dapur',
+            'Merica Bubuk',
+            'Ketumbar Bubuk',
+            'Kecap Manis Sachet',
+            'Saus Sambal Botol',
+            'Kopi Sachet Original',
+            'Kopi Sachet Susu',
+            'Teh Celup Isi 25',
+            'Krimer Sachet',
+            'Gula Aren Sachet',
+            'Mie Goreng Instan',
+            'Mie Kuah Soto',
+            'Mie Kari Ayam',
+            'Mie Pedas',
+            'Bihun Instan',
+            'Sabun Mandi Batang',
+            'Sampo Sachet',
+            'Pasta Gigi Kecil',
+            'Tisu Gulung',
+            'Deterjen Sachet',
         ];
 
-        foreach ($products as [$categoryName, $name, $price, $stock]) {
-            if ($this->db->table('products')->where('name', $name)->countAllResults() > 0) {
+        $existingProducts = [];
+        foreach ($this->db->table('products')->select('name')->get()->getResultArray() as $product) {
+            $existingProducts[$product['name']] = true;
+        }
+
+        $products = [];
+        for ($index = 1; $index <= 1000; $index++) {
+            $categoryName = $categories[($index - 1) % count($categories)];
+            $baseName = $productNames[($index - 1) % count($productNames)];
+            $name = 'Produk Demo ' . str_pad((string) $index, 4, '0', STR_PAD_LEFT) . ' - ' . $baseName;
+            $price = 1000 + (($index % 60) * 1000);
+            $stock = 10 + ($index % 90);
+
+            if (isset($existingProducts[$name])) {
                 continue;
             }
 
-            $this->db->table('products')->insert([
+            $products[] = [
                 'category_id' => $categoryIds[$categoryName],
                 'name'        => $name,
                 'price'       => $price,
@@ -106,7 +118,25 @@ class ProductCatalogSeeder extends Seeder
                 'is_active'   => 1,
                 'created_at'  => $now,
                 'updated_at'  => $now,
-            ]);
+            ];
+        }
+
+        foreach (array_chunk($products, 100) as $chunk) {
+            $this->db->table('products')->insertBatch($chunk);
+        }
+
+        foreach ($this->db->table('products')
+            ->select('id')
+            ->like('name', 'Produk Demo ', 'after')
+            ->where('barcode', null)
+            ->get()
+            ->getResult() as $product) {
+            $this->db->table('products')
+                ->where('id', $product->id)
+                ->update([
+                    'barcode'    => 'WRG-' . str_pad((string) $product->id, 8, '0', STR_PAD_LEFT),
+                    'updated_at' => $now,
+                ]);
         }
     }
 }

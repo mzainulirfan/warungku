@@ -11,6 +11,7 @@ Tujuan utama:
 - Mencatat transaksi penjualan.
 - Mengelola produk dan kategori.
 - Menampilkan laporan penjualan harian.
+- Menampilkan laporan penjualan sederhana berdasarkan rentang tanggal.
 - Mengatur akses berdasarkan role admin dan kasir.
 
 ## Aktor
@@ -29,6 +30,7 @@ Tujuan utama:
 | View | CI4 native PHP view |
 | CSS | Custom CSS light grayscale theme |
 | JavaScript | Vanilla JS, Alpine.js opsional |
+| Barcode | `picqer/php-barcode-generator` untuk SVG Code128 |
 | Icon | Lucide Icons via CDN |
 | Font | Geist atau Inter |
 | PHP | 8.1+ |
@@ -55,6 +57,7 @@ app/
     ProductController.php
     CategoryController.php
     TransactionController.php
+    ReportController.php
     UserController.php
     SettingController.php
   Database/
@@ -85,6 +88,7 @@ app/
     product/
     category/
     transaction/
+    report/
     user/
     setting/
 public/
@@ -133,6 +137,7 @@ Menyimpan master produk.
 | id | integer | primary key |
 | category_id | integer | nullable, FK ke categories |
 | name | text | wajib |
+| barcode | text | opsional, unique, auto-generate jika kosong |
 | price | real | default 0 |
 | stock | integer | default 0 |
 | image | text | nama file gambar opsional |
@@ -195,24 +200,36 @@ Admin melihat:
 
 - Total penjualan hari ini.
 - Jumlah transaksi hari ini.
+- Rata-rata nilai transaksi hari ini.
 - Jumlah produk aktif.
+- Jumlah produk stok rendah.
 - Jumlah kategori.
 - Lima transaksi terakhir hari ini.
+- Daftar singkat produk stok rendah.
+- Akses cepat ke POS, riwayat, produk, dan laporan.
 
 Kasir melihat:
 
 - Total penjualan miliknya hari ini.
 - Jumlah transaksi miliknya hari ini.
+- Rata-rata nilai transaksi miliknya hari ini.
 - Shortcut ke halaman POS.
+- Shortcut ke riwayat transaksi.
 
 ### Produk
 
 - Tabel produk.
 - Filter kategori.
-- Search nama produk.
+- Filter status stok rendah.
+- Search nama produk atau barcode.
 - Pagination 10 data per halaman.
 - Aksi tambah, edit, hapus, toggle aktif.
 - Upload gambar produk ke `public/assets/img/products`.
+- Field barcode opsional, auto-generate saat dikosongkan.
+- Preview barcode tersedia dari form, daftar, dan detail produk.
+- Detail produk menyediakan aksi cetak label barcode.
+- Import CSV massal mendukung kolom barcode opsional.
+- Export CSV produk mengikuti filter aktif dan memakai format yang kompatibel dengan template import.
 
 ### Kategori
 
@@ -226,6 +243,10 @@ Layout 2 kolom:
 
 - Kiri: daftar produk aktif, search, filter kategori.
 - Kanan: keranjang, total, input pembayaran, kembalian, tombol simpan.
+- Input scan barcode untuk langsung menambahkan produk ke keranjang.
+- Keranjang disimpan di localStorage agar tetap ada saat pindah halaman.
+- Nominal pembayaran disarankan otomatis berdasarkan pecahan rupiah terdekat.
+- Opsi cetak struk tersedia saat transaksi berhasil.
 
 Transaksi disimpan lewat controller `TransactionController::store`.
 
@@ -236,6 +257,15 @@ Transaksi disimpan lewat controller `TransactionController::store`.
 - Admin dapat melihat semua transaksi.
 - Kasir hanya melihat transaksi miliknya.
 - Detail transaksi menampilkan item dan ringkasan pembayaran.
+
+### Laporan Penjualan
+
+- Filter rentang tanggal.
+- KPI omzet, transaksi, item terjual, dan rata-rata transaksi.
+- Tabel penjualan harian.
+- Tabel top 10 produk terlaris.
+- Tombol export CSV.
+- Admin melihat semua transaksi, kasir hanya melihat transaksi miliknya.
 
 ### User Management
 
@@ -272,9 +302,12 @@ Komponen wajib:
 Status implementasi desain saat ini:
 
 - Layout utama sudah memakai sidebar fixed dan topbar sticky.
-- Dashboard sudah memakai KPI cards dan tabel transaksi terakhir.
+- Dashboard sudah memakai hero ringkas, KPI cards responsif, tabel transaksi terakhir, panel stok rendah, dan akses cepat.
 - Halaman login sudah mengikuti light card style.
-- Halaman POS, transaksi, produk, kategori, user, dan setting masih memakai placeholder sampai fase masing-masing dikerjakan.
+- Halaman POS, transaksi, produk, kategori, user, dan setting sudah memakai komponen light dashboard.
+- Halaman produk sudah mendukung barcode, preview barcode, import CSV, dan detail produk.
+- Halaman POS sudah mendukung scan barcode, keranjang persistent, saran pembayaran, dan cetak struk.
+- Halaman laporan sudah menampilkan KPI penjualan, agregasi harian, produk terlaris, dan export CSV.
 
 ## Status Implementasi Saat Ini
 
@@ -282,18 +315,17 @@ Sudah tersedia:
 
 - Konfigurasi SQLite lokal lewat `.env` development.
 - Migration untuk tabel inti.
-- Seeder awal untuk admin, setting default, dan kategori awal.
+- Migration barcode produk.
+- Seeder awal untuk admin, setting default, kategori awal, dan katalog demo.
 - Auth login/logout.
 - Filter auth dan role.
-- Dashboard awal.
-- Placeholder controller untuk POS dan menu admin.
-
-Belum tersedia:
-
+- Dashboard admin dan kasir.
 - CRUD kategori, produk, user, dan setting.
 - POS transaksi penuh.
 - Riwayat dan detail transaksi.
-- Dashboard final dengan data produksi lengkap.
+- Laporan penjualan sederhana.
+- Barcode produk dan scan barcode POS.
+- Cetak struk transaksi.
 
 ## Desain Routing
 

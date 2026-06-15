@@ -36,6 +36,17 @@ class DashboardController extends BaseController
             'totalSales'         => (float) ($salesBuilder->get()->getRow()->total ?? 0),
             'totalTransactions'  => $trxBuilder->countAllResults(),
             'activeProducts'     => $isAdmin ? $db->table('products')->where('is_active', 1)->countAllResults() : null,
+            'lowStockProducts'   => $isAdmin ? $db->table('products')->where('is_active', 1)->where('stock <=', 5)->countAllResults() : null,
+            'lowStockList'       => $isAdmin ? $db->table('products')
+                ->select('products.*, categories.name AS category_name')
+                ->join('categories', 'categories.id = products.category_id', 'left')
+                ->where('products.is_active', 1)
+                ->where('products.stock <=', 5)
+                ->orderBy('products.stock', 'ASC')
+                ->orderBy('products.name', 'ASC')
+                ->limit(5)
+                ->get()
+                ->getResult() : [],
             'totalCategories'    => $isAdmin ? $db->table('categories')->countAllResults() : null,
             'latestTransactions' => $lastBuilder->get()->getResult(),
             'isAdmin'            => $isAdmin,

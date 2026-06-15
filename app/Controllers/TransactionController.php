@@ -38,7 +38,10 @@ class TransactionController extends BaseController
         }
 
         if ($keyword !== '') {
-            $builder->like('products.name', $keyword);
+            $builder->groupStart()
+                ->like('products.name', $keyword)
+                ->orLike('products.barcode', $keyword)
+                ->groupEnd();
         }
 
         return view('transaction/pos', [
@@ -48,6 +51,58 @@ class TransactionController extends BaseController
             'filters'    => [
                 'category_id' => $categoryId,
                 'q'           => $keyword,
+            ],
+        ]);
+    }
+
+    public function barcode()
+    {
+        $code = trim((string) $this->request->getGet('code'));
+
+        if ($code === '') {
+            return $this->response->setStatusCode(422)->setJSON([
+                'success' => false,
+                'message' => 'Barcode wajib diisi.',
+            ]);
+        }
+
+        $product = $this->productModel
+            ->select('products.*, categories.name AS category_name')
+            ->join('categories', 'categories.id = products.category_id', 'left')
+            ->where('products.barcode', $code)
+            ->first();
+
+        if (! $product) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'success' => false,
+                'message' => 'Produk dengan barcode tersebut tidak ditemukan.',
+            ]);
+        }
+
+        if ((int) $product->is_active !== 1) {
+            return $this->response->setStatusCode(422)->setJSON([
+                'success' => false,
+                'message' => 'Produk nonaktif tidak dapat ditambahkan.',
+            ]);
+        }
+
+        if ((int) $product->stock <= 0) {
+            return $this->response->setStatusCode(422)->setJSON([
+                'success' => false,
+                'message' => 'Stok produk habis.',
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Produk berhasil ditambahkan ke keranjang.',
+            'product' => [
+                'id'       => (int) $product->id,
+                'name'     => $product->name,
+                'barcode'  => $product->barcode,
+                'price'    => (float) $product->price,
+                'stock'    => (int) $product->stock,
+                'category' => $product->category_name,
             ],
         ]);
     }

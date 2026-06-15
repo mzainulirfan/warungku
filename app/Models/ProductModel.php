@@ -12,6 +12,7 @@ class ProductModel extends Model
     protected $allowedFields = [
         'category_id',
         'name',
+        'barcode',
         'price',
         'stock',
         'image',

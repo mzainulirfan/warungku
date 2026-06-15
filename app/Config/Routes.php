@@ -11,14 +11,20 @@ $routes->get('/logout', 'AuthController::logout');
 $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/dashboard', 'DashboardController::index');
     $routes->get('/pos', 'TransactionController::pos');
+    $routes->get('/pos/barcode', 'TransactionController::barcode');
     $routes->post('/pos/store', 'TransactionController::store');
     $routes->get('/transaction', 'TransactionController::history');
     $routes->get('/transaction/detail/(:num)', 'TransactionController::detail/$1');
+    $routes->get('/report', 'ReportController::index');
+    $routes->get('/report/export', 'ReportController::export');
 
     $routes->group('', ['filter' => 'role:admin'], static function ($routes) {
         $routes->get('/product', 'ProductController::index');
         $routes->get('/product/template', 'ProductController::template');
+        $routes->get('/product/export', 'ProductController::export');
         $routes->get('/product/create', 'ProductController::create');
+        $routes->get('/product/barcode-preview', 'ProductController::barcodePreview');
+        $routes->get('/product/detail/(:num)', 'ProductController::detail/$1');
         $routes->post('/product/store', 'ProductController::store');
         $routes->post('/product/import', 'ProductController::import');
         $routes->get('/product/edit/(:num)', 'ProductController::edit/$1');

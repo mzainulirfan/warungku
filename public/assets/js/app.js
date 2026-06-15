@@ -1,3 +1,9 @@
+const resolveCurrentHostUrl = (url) => {
+    const resolved = new URL(url, window.location.origin);
+
+    return `${resolved.pathname}${resolved.search}`;
+};
+
 const createConfirmModal = () => {
     const modal = document.createElement('div');
     modal.className = 'confirm-modal';
@@ -91,11 +97,135 @@ confirmAccept.addEventListener('click', () => {
     }
 });
 
+const createBarcodePreviewModal = () => {
+    const modal = document.createElement('div');
+    modal.className = 'confirm-modal barcode-preview-modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'barcode-preview-title');
+    modal.hidden = true;
+    modal.innerHTML = `
+        <div class="confirm-modal__backdrop" data-barcode-preview-close></div>
+        <div class="confirm-modal__panel" role="document">
+            <div class="confirm-modal__content">
+                <h3 id="barcode-preview-title">Preview Barcode</h3>
+                <p data-barcode-preview-message>Barcode akan tampil di sini.</p>
+                <div class="barcode-preview-modal__body" data-barcode-preview-body></div>
+            </div>
+            <div class="confirm-modal__actions">
+                <button class="btn btn-primary" type="button" data-barcode-preview-close>Tutup</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    return modal;
+};
+
+const barcodePreviewModal = createBarcodePreviewModal();
+const barcodePreviewMessage = barcodePreviewModal.querySelector('[data-barcode-preview-message]');
+const barcodePreviewBody = barcodePreviewModal.querySelector('[data-barcode-preview-body]');
+let pendingBarcodePreviewTrigger = null;
+
+const closeBarcodePreviewModal = () => {
+    barcodePreviewModal.hidden = true;
+    document.body.classList.remove('modal-open');
+    pendingBarcodePreviewTrigger?.focus();
+    pendingBarcodePreviewTrigger = null;
+};
+
+const openBarcodePreviewModal = (trigger) => {
+    pendingBarcodePreviewTrigger = trigger;
+    barcodePreviewModal.hidden = false;
+    document.body.classList.add('modal-open');
+};
+
+document.addEventListener('click', async (event) => {
+    const printBarcodeButton = event.target.closest('[data-print-barcode-label]');
+    if (printBarcodeButton) {
+        event.preventDefault();
+        document.body.classList.add('printing-barcode-label');
+        window.print();
+        return;
+    }
+
+    const trigger = event.target.closest('[data-barcode-preview]');
+
+    if (!trigger) {
+        return;
+    }
+
+    event.preventDefault();
+
+    const input = trigger.dataset.barcodeInput
+        ? document.getElementById(trigger.dataset.barcodeInput)
+        : document.getElementById('barcode');
+    const code = (trigger.dataset.barcodeCode || input?.value || '').trim();
+    const barcodeUrl = trigger.dataset.barcodeUrl;
+
+    openBarcodePreviewModal(trigger);
+    barcodePreviewMessage.textContent = 'Memuat preview barcode...';
+    barcodePreviewBody.innerHTML = '';
+
+    if (!code || !barcodeUrl) {
+        barcodePreviewMessage.textContent = 'Isi barcode terlebih dahulu untuk melihat preview.';
+        return;
+    }
+
+    const url = new URL(resolveCurrentHostUrl(barcodeUrl), window.location.origin);
+    url.searchParams.set('code', code);
+
+    try {
+        const response = await fetch(resolveCurrentHostUrl(url.toString()), {
+            headers: {
+                Accept: 'application/json',
+            },
+        });
+        const payload = await response.json();
+
+        if (!response.ok || !payload.success) {
+            barcodePreviewMessage.textContent = payload.message || 'Preview barcode tidak dapat dibuat.';
+            return;
+        }
+
+        barcodePreviewMessage.textContent = 'Pastikan kode terbaca jelas sebelum disimpan.';
+        barcodePreviewBody.innerHTML = `
+            <div class="barcode-preview">
+                ${payload.svg}
+                <strong>${escapeHtml(payload.barcode)}</strong>
+            </div>
+        `;
+    } catch (error) {
+        barcodePreviewMessage.textContent = 'Preview barcode gagal dimuat. Coba ulangi.';
+    }
+});
+
+window.addEventListener('afterprint', () => {
+    document.body.classList.remove('printing-barcode-label');
+});
+
+barcodePreviewModal.addEventListener('click', (event) => {
+    if (event.target.closest('[data-barcode-preview-close]')) {
+        closeBarcodePreviewModal();
+    }
+});
+
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && ! confirmModal.hidden) {
         closeConfirmModal();
     }
+
+    if (event.key === 'Escape' && ! barcodePreviewModal.hidden) {
+        closeBarcodePreviewModal();
+    }
 });
+
+const escapeHtml = (value) => String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 
 const sidebar = document.querySelector('.sidebar');
 const sidebarToggle = document.querySelector('[data-sidebar-toggle]');
@@ -187,6 +317,8 @@ if (posRoot) {
     const noteInput = posRoot.querySelector('[name="note"]');
     const posForm = posRoot.querySelector('[data-pos-form]');
     const cartPanelCount = posRoot.querySelector('[data-cart-panel-count]');
+    const barcodeScanInput = posRoot.querySelector('[data-barcode-scan]');
+    const barcodeMessage = posRoot.querySelector('[data-barcode-message]');
     let lastSuggestedPayment = 0;
     let paymentTouched = false;
 
@@ -228,6 +360,7 @@ if (posRoot) {
         const items = Array.from(cart.values()).map((item) => ({
             id: item.id,
             name: item.name,
+            barcode: item.barcode || '',
             price: item.price,
             qty: item.qty,
             stock: item.stock,
@@ -257,6 +390,7 @@ if (posRoot) {
                     cart.set(id, {
                         id,
                         name: item.name || 'Produk',
+                        barcode: item.barcode || '',
                         price,
                         qty: Math.min(qty, stock),
                         stock,
@@ -329,24 +463,81 @@ if (posRoot) {
         syncCart();
     };
 
-    const addProduct = (button) => {
-        const id = Number(button.dataset.id);
+    const showBarcodeMessage = (message, type = 'success') => {
+        if (!barcodeMessage) {
+            return;
+        }
+
+        barcodeMessage.textContent = message;
+        barcodeMessage.dataset.type = type;
+        barcodeMessage.hidden = false;
+    };
+
+    const addProductData = (product) => {
+        const id = Number(product.id);
         const existing = cart.get(id);
-        const stock = Number(button.dataset.stock);
+        const stock = Number(product.stock);
 
         if (existing) {
             existing.qty = Math.min(existing.qty + 1, existing.stock);
         } else {
             cart.set(id, {
                 id,
-                name: button.dataset.name,
-                price: Number(button.dataset.price),
+                name: product.name,
+                barcode: product.barcode || '',
+                price: Number(product.price),
                 qty: 1,
                 stock,
             });
         }
 
         renderCart();
+    };
+
+    const addProduct = (button) => {
+        addProductData({
+            id: button.dataset.id,
+            name: button.dataset.name,
+            barcode: button.dataset.barcode || '',
+            price: button.dataset.price,
+            stock: button.dataset.stock,
+        });
+    };
+
+    const scanBarcode = async () => {
+        const code = barcodeScanInput?.value.trim() || '';
+        const barcodeUrl = barcodeScanInput?.dataset.barcodeUrl;
+
+        if (!code || !barcodeUrl) {
+            return;
+        }
+
+        const url = new URL(resolveCurrentHostUrl(barcodeUrl), window.location.origin);
+        url.searchParams.set('code', code);
+        barcodeScanInput.disabled = true;
+
+        try {
+            const response = await fetch(resolveCurrentHostUrl(url.toString()), {
+                headers: {
+                    Accept: 'application/json',
+                },
+            });
+            const payload = await response.json();
+
+            if (!response.ok || !payload.success) {
+                showBarcodeMessage(payload.message || 'Barcode tidak dapat diproses.', 'error');
+                return;
+            }
+
+            addProductData(payload.product);
+            showBarcodeMessage(payload.message || 'Produk berhasil ditambahkan.', 'success');
+            barcodeScanInput.value = '';
+        } catch (error) {
+            showBarcodeMessage('Scan barcode gagal. Coba ulangi.', 'error');
+        } finally {
+            barcodeScanInput.disabled = false;
+            barcodeScanInput.focus();
+        }
     };
 
     const clearCart = () => {
@@ -416,6 +607,15 @@ if (posRoot) {
         if (event.target === noteInput) {
             persistCart();
         }
+    });
+
+    barcodeScanInput?.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') {
+            return;
+        }
+
+        event.preventDefault();
+        scanBarcode();
     });
 
     posForm?.addEventListener('submit', () => {

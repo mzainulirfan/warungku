@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\CategoryModel;
 use App\Models\ProductModel;
+use Picqer\Barcode\BarcodeGeneratorSVG;
 
 class ProductController extends BaseController
 {
@@ -20,6 +21,7 @@ class ProductController extends BaseController
     {
         $categoryId = $this->request->getGet('category_id');
         $keyword = trim((string) $this->request->getGet('q'));
+        $stockStatus = (string) $this->request->getGet('stock_status');
 
         $builder = $this->productModel
             ->select('products.*, categories.name AS category_name')
@@ -30,7 +32,14 @@ class ProductController extends BaseController
         }
 
         if ($keyword !== '') {
-            $builder->like('products.name', $keyword);
+            $builder->groupStart()
+                ->like('products.name', $keyword)
+                ->orLike('products.barcode', $keyword)
+                ->groupEnd();
+        }
+
+        if ($stockStatus === 'low') {
+            $builder->where('products.stock <=', 5);
         }
 
         $products = $builder
@@ -45,6 +54,7 @@ class ProductController extends BaseController
             'filters'    => [
                 'category_id' => $categoryId,
                 'q'           => $keyword,
+                'stock_status' => $stockStatus,
             ],
         ]);
     }
@@ -57,12 +67,80 @@ class ProductController extends BaseController
         ]);
     }
 
+    public function detail($id)
+    {
+        $product = $this->productModel
+            ->select('products.*, categories.name AS category_name')
+            ->join('categories', 'categories.id = products.category_id', 'left')
+            ->find((int) $id);
+
+        if (! $product) {
+            return redirect()->to('/product')->with('error', 'Produk tidak ditemukan.');
+        }
+
+        $db = \Config\Database::connect();
+        $sales = $db->table('transaction_items')
+            ->select('COUNT(*) AS transaction_count, COALESCE(SUM(qty), 0) AS total_qty, COALESCE(SUM(subtotal), 0) AS total_sales')
+            ->where('product_id', $product->id)
+            ->get()
+            ->getRow();
+
+        $barcodeSvg = null;
+        if ($product->barcode) {
+            $generator = new BarcodeGeneratorSVG();
+            $barcodeSvg = $generator->getBarcode((string) $product->barcode, BarcodeGeneratorSVG::TYPE_CODE_128, 2, 70);
+            $svgStart = strpos($barcodeSvg, '<svg');
+            if ($svgStart !== false) {
+                $barcodeSvg = substr($barcodeSvg, $svgStart);
+            }
+        }
+
+        return view('product/detail', [
+            'title'      => 'Detail Produk',
+            'product'    => $product,
+            'sales'      => $sales,
+            'barcodeSvg' => $barcodeSvg,
+        ]);
+    }
+
+    public function barcodePreview()
+    {
+        $barcode = $this->normalizeBarcode($this->request->getGet('code'));
+
+        if ($barcode === null) {
+            return $this->response->setStatusCode(422)->setJSON([
+                'success' => false,
+                'message' => 'Isi barcode terlebih dahulu untuk melihat preview.',
+            ]);
+        }
+
+        if (mb_strlen($barcode) > 64) {
+            return $this->response->setStatusCode(422)->setJSON([
+                'success' => false,
+                'message' => 'Barcode maksimal 64 karakter.',
+            ]);
+        }
+
+        $generator = new BarcodeGeneratorSVG();
+        $svg = $generator->getBarcode($barcode, BarcodeGeneratorSVG::TYPE_CODE_128, 2, 70);
+        $svgStart = strpos($svg, '<svg');
+        if ($svgStart !== false) {
+            $svg = substr($svg, $svgStart);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'barcode' => $barcode,
+            'svg'     => $svg,
+        ]);
+    }
+
     public function template()
     {
         $rows = [
-            ['category_name', 'name', 'price', 'stock', 'is_active'],
-            ['Makanan', 'Nasi Goreng', '15000', '20', '1'],
-            ['Minuman', 'Es Teh Manis', '5000', '30', '1'],
+            ['category_name', 'name', 'barcode', 'price', 'stock', 'is_active'],
+            ['Makanan', 'Nasi Goreng', 'WRG-DEMO-001', '15000', '20', '1'],
+            ['Minuman', 'Es Teh Manis', '', '5000', '30', '1'],
         ];
 
         $content = "\xEF\xBB\xBFsep=,\r\n";
@@ -73,6 +151,52 @@ class ProductController extends BaseController
         return $this->response
             ->setHeader('Content-Type', 'text/csv; charset=UTF-8')
             ->setHeader('Content-Disposition', 'attachment; filename="template_import_produk.csv"')
+            ->setBody($content);
+    }
+
+    public function export()
+    {
+        $categoryId = $this->request->getGet('category_id');
+        $keyword = trim((string) $this->request->getGet('q'));
+        $stockStatus = (string) $this->request->getGet('stock_status');
+        $builder = $this->productModel
+            ->select('products.*, categories.name AS category_name')
+            ->join('categories', 'categories.id = products.category_id', 'left');
+
+        if ($categoryId !== null && $categoryId !== '') {
+            $builder->where('products.category_id', (int) $categoryId);
+        }
+
+        if ($keyword !== '') {
+            $builder->groupStart()
+                ->like('products.name', $keyword)
+                ->orLike('products.barcode', $keyword)
+                ->groupEnd();
+        }
+
+        if ($stockStatus === 'low') {
+            $builder->where('products.stock <=', 5);
+        }
+
+        $content = "\xEF\xBB\xBFsep=,\r\n";
+        $content .= $this->csvLine(['category_name', 'name', 'barcode', 'price', 'stock', 'is_active']);
+
+        foreach ($builder->orderBy('products.name', 'ASC')->findAll() as $product) {
+            $content .= $this->csvLine([
+                $product->category_name ?? '',
+                $product->name,
+                $product->barcode ?? '',
+                $product->price,
+                $product->stock,
+                $product->is_active,
+            ]);
+        }
+
+        $suffix = date('Ymd_His');
+
+        return $this->response
+            ->setHeader('Content-Type', 'text/csv; charset=UTF-8')
+            ->setHeader('Content-Disposition', 'attachment; filename="export_produk_' . $suffix . '.csv"')
             ->setBody($content);
     }
 
@@ -91,15 +215,23 @@ class ProductController extends BaseController
         }
 
         $imageName = $this->uploadImage();
+        $barcode = $this->normalizeBarcode($this->request->getPost('barcode'));
 
-        $this->productModel->insert([
+        $productId = (int) $this->productModel->insert([
             'category_id' => (int) $this->request->getPost('category_id'),
             'name'        => trim((string) $this->request->getPost('name')),
+            'barcode'     => $barcode,
             'price'       => (float) $this->request->getPost('price'),
             'stock'       => (int) $this->request->getPost('stock'),
             'image'       => $imageName,
             'is_active'   => (int) $this->request->getPost('is_active'),
-        ]);
+        ], true);
+
+        if ($barcode === null) {
+            $this->productModel->update($productId, [
+                'barcode' => $this->autoBarcode($productId),
+            ]);
+        }
 
         return redirect()->to('/product')->with('success', 'Produk berhasil ditambahkan.');
     }
@@ -140,10 +272,23 @@ class ProductController extends BaseController
                 ->with('errors', ['product_file' => 'File tidak berisi data produk.']);
         }
 
+        $categories = $this->categoryMap();
+        $barcodeMap = $this->barcodeMap();
+        $barcodeErrors = [];
+
+        foreach ($rows as $rowNumber => $row) {
+            if ($row['barcode'] !== '' && isset($barcodeMap[mb_strtolower($row['barcode'])])) {
+                $barcodeErrors[] = 'Baris ' . $rowNumber . ': barcode sudah digunakan produk lain.';
+            }
+        }
+
+        if ($barcodeErrors !== []) {
+            return redirect()->to('/product')->with('errors', $barcodeErrors);
+        }
+
         $db = \Config\Database::connect();
         $db->transStart();
 
-        $categories = $this->categoryMap();
         $imported = 0;
 
         foreach ($rows as $row) {
@@ -155,14 +300,23 @@ class ProductController extends BaseController
                 $categories[$categoryKey] = $categoryId;
             }
 
-            $this->productModel->insert([
+            $barcode = $this->normalizeBarcode($row['barcode']);
+            $productId = (int) $this->productModel->insert([
                 'category_id' => $categoryId,
                 'name'        => $row['name'],
+                'barcode'     => $barcode,
                 'price'       => $row['price'],
                 'stock'       => $row['stock'],
                 'image'       => null,
                 'is_active'   => $row['is_active'],
-            ]);
+            ], true);
+
+            if ($barcode === null) {
+                $this->productModel->update($productId, [
+                    'barcode' => $this->autoBarcode($productId),
+                ]);
+            }
+
             $imported++;
         }
 
@@ -200,7 +354,7 @@ class ProductController extends BaseController
             return redirect()->to('/product')->with('error', 'Produk tidak ditemukan.');
         }
 
-        if (! $this->validate($this->validationRules())) {
+        if (! $this->validate($this->validationRules((int) $product->id))) {
             return redirect()->back()
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
@@ -213,9 +367,11 @@ class ProductController extends BaseController
         }
 
         $imageName = $this->uploadImage();
+        $barcode = $this->normalizeBarcode($this->request->getPost('barcode'));
         $data = [
             'category_id' => (int) $this->request->getPost('category_id'),
             'name'        => trim((string) $this->request->getPost('name')),
+            'barcode'     => $barcode ?: $this->autoBarcode((int) $product->id),
             'price'       => (float) $this->request->getPost('price'),
             'stock'       => (int) $this->request->getPost('stock'),
             'is_active'   => (int) $this->request->getPost('is_active'),
@@ -268,8 +424,13 @@ class ProductController extends BaseController
         return redirect()->to('/product')->with('success', 'Status produk berhasil diperbarui.');
     }
 
-    private function validationRules(): array
+    private function validationRules(?int $productId = null): array
     {
+        $barcodeRule = 'permit_empty|max_length[64]|is_unique[products.barcode]';
+        if ($productId !== null) {
+            $barcodeRule = 'permit_empty|max_length[64]|is_unique[products.barcode,id,' . $productId . ']';
+        }
+
         return [
             'name' => [
                 'label'  => 'Nama Produk',
@@ -286,6 +447,14 @@ class ProductController extends BaseController
                 'errors' => [
                     'required'      => 'Kategori wajib dipilih.',
                     'is_not_unique' => 'Kategori yang dipilih tidak valid.',
+                ],
+            ],
+            'barcode' => [
+                'label'  => 'Barcode',
+                'rules'  => $barcodeRule,
+                'errors' => [
+                    'max_length' => 'Barcode maksimal 64 karakter.',
+                    'is_unique'  => 'Barcode sudah digunakan produk lain.',
                 ],
             ],
             'price' => [
@@ -373,11 +542,12 @@ class ProductController extends BaseController
                 $data[0] = $firstCell;
                 $header = $data;
                 $expected = ['category_name', 'name', 'price', 'stock', 'is_active'];
+                $expectedWithBarcode = ['category_name', 'name', 'barcode', 'price', 'stock', 'is_active'];
 
-                if ($header !== $expected) {
+                if ($header !== $expected && $header !== $expectedWithBarcode) {
                     fclose($handle);
                     return [[], [
-                        'product_file' => 'Header file harus: category_name, name, price, stock, is_active.',
+                        'product_file' => 'Header file harus: category_name, name, barcode, price, stock, is_active.',
                     ]];
                 }
 
@@ -386,6 +556,7 @@ class ProductController extends BaseController
 
             $rowNumber = $line;
             $row = array_combine($header, array_pad($data, count($header), ''));
+            $row['barcode'] = $row['barcode'] ?? '';
             $rowErrors = $this->validateImportRow($row, $rowNumber);
 
             if ($rowErrors !== []) {
@@ -397,9 +568,10 @@ class ProductController extends BaseController
                 continue;
             }
 
-            $rows[] = [
+            $rows[$rowNumber] = [
                 'category_name' => $row['category_name'],
                 'name'          => $row['name'],
+                'barcode'       => $row['barcode'],
                 'price'         => (float) $row['price'],
                 'stock'         => (int) $row['stock'],
                 'is_active'     => (int) $row['is_active'],
@@ -418,6 +590,7 @@ class ProductController extends BaseController
     private function validateImportRow(array $row, int $rowNumber): array
     {
         $errors = [];
+        static $seenBarcodes = [];
 
         if (($row['category_name'] ?? '') === '') {
             $errors[] = 'Baris ' . $rowNumber . ': kategori wajib diisi.';
@@ -429,6 +602,18 @@ class ProductController extends BaseController
             $errors[] = 'Baris ' . $rowNumber . ': nama produk wajib diisi.';
         } elseif (mb_strlen($row['name']) < 2 || mb_strlen($row['name']) > 100) {
             $errors[] = 'Baris ' . $rowNumber . ': nama produk harus 2 sampai 100 karakter.';
+        }
+
+        $barcode = trim((string) ($row['barcode'] ?? ''));
+        if ($barcode !== '') {
+            $barcodeKey = mb_strtolower($barcode);
+            if (mb_strlen($barcode) > 64) {
+                $errors[] = 'Baris ' . $rowNumber . ': barcode maksimal 64 karakter.';
+            } elseif (isset($seenBarcodes[$barcodeKey])) {
+                $errors[] = 'Baris ' . $rowNumber . ': barcode duplikat dalam file.';
+            } else {
+                $seenBarcodes[$barcodeKey] = true;
+            }
         }
 
         if (($row['price'] ?? '') === '' || ! is_numeric($row['price']) || (float) $row['price'] < 0) {
@@ -454,6 +639,28 @@ class ProductController extends BaseController
         }
 
         return $map;
+    }
+
+    private function barcodeMap(): array
+    {
+        $map = [];
+        foreach ($this->productModel->where('barcode IS NOT NULL', null, false)->findAll() as $product) {
+            $map[mb_strtolower((string) $product->barcode)] = (int) $product->id;
+        }
+
+        return $map;
+    }
+
+    private function normalizeBarcode($barcode): ?string
+    {
+        $barcode = trim((string) $barcode);
+
+        return $barcode === '' ? null : $barcode;
+    }
+
+    private function autoBarcode(int $id): string
+    {
+        return 'WRG-' . str_pad((string) $id, 8, '0', STR_PAD_LEFT);
     }
 
     private function csvLine(array $row): string

@@ -91,6 +91,7 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Implementasikan filter kategori.
 - [x] Implementasikan search nama produk.
 - [x] Implementasikan pagination.
+- [x] Implementasikan filter produk stok rendah.
 - [x] Implementasikan `create`.
 - [x] Implementasikan `store`.
 - [x] Implementasikan upload gambar.
@@ -98,10 +99,19 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Implementasikan `update`.
 - [x] Implementasikan `delete`.
 - [x] Implementasikan `toggle`.
+- [x] Implementasikan halaman detail produk.
+- [x] Tambahkan field barcode unik produk.
+- [x] Implementasikan auto-generate barcode jika field kosong.
+- [x] Implementasikan preview barcode di form, list, dan detail produk.
+- [x] Implementasikan cetak label barcode dari detail produk.
+- [x] Implementasikan import CSV produk dengan kolom barcode opsional.
+- [x] Implementasikan export CSV produk sesuai filter aktif.
 - [x] Buat view `product/index.php`.
 - [x] Buat view `product/create.php`.
 - [x] Buat view `product/edit.php`.
+- [x] Buat view `product/detail.php`.
 - [x] Validasi semua field produk.
+- [x] Validasi barcode maksimal 64 karakter dan unique.
 - [x] Cegah hapus produk yang sudah pernah masuk transaksi.
 - [x] Test CRUD produk sebagai admin.
 
@@ -148,12 +158,19 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Buat layout POS 2 kolom.
 - [x] Tampilkan produk aktif saja.
 - [x] Buat search produk di POS.
+- [x] Buat search produk berdasarkan nama atau barcode di POS.
+- [x] Buat input scan barcode di POS.
+- [x] Implementasikan endpoint lookup barcode POS.
 - [x] Buat filter kategori di POS.
 - [x] Implementasikan keranjang dengan vanilla JS.
+- [x] Implementasikan keranjang tersimpan di localStorage saat pindah halaman.
 - [x] Implementasikan tambah item ke keranjang.
+- [x] Implementasikan tambah item ke keranjang dari scan barcode.
 - [x] Implementasikan ubah qty item.
 - [x] Implementasikan hapus item.
+- [x] Implementasikan kosongkan semua isi keranjang.
 - [x] Hitung subtotal, total, pembayaran, dan kembalian otomatis.
+- [x] Sarankan nominal pembayaran berdasarkan pecahan rupiah terdekat.
 - [x] Kirim transaksi via AJAX atau POST biasa.
 - [x] Sertakan CSRF token pada request transaksi.
 - [x] Validasi keranjang tidak kosong.
@@ -162,6 +179,7 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Simpan transaksi dalam database transaction.
 - [x] Simpan item transaksi dengan snapshot nama dan harga.
 - [x] Tampilkan struk ringkas setelah transaksi berhasil.
+- [x] Tambahkan opsi cetak struk setelah transaksi.
 - [x] Buat view `transaction/history.php`.
 - [x] Buat filter riwayat berdasarkan tanggal.
 - [x] Buat view `transaction/detail.php`.
@@ -175,11 +193,13 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Query total penjualan hari ini.
 - [x] Query jumlah transaksi hari ini.
 - [x] Query jumlah produk aktif.
+- [x] Query jumlah produk stok rendah.
 - [x] Query jumlah kategori.
 - [x] Query lima transaksi terakhir.
 - [x] Buat dashboard admin.
 - [x] Buat dashboard kasir.
 - [x] Buat view `dashboard/index.php`.
+- [x] Redesign dashboard dengan hero ringkas, KPI responsif, transaksi terakhir, stok rendah, dan akses cepat.
 - [x] Pastikan sidebar menampilkan menu sesuai role.
 - [x] Pastikan flash message tampil konsisten.
 - [x] Pastikan semua halaman punya title.
@@ -190,6 +210,23 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Test upload gambar valid dan invalid.
 - [x] Test mode production tidak menampilkan debug output.
 - [x] Set `CI_ENVIRONMENT = production` untuk konfigurasi production.
+- [x] Seed katalog demo 10 kategori dan 1000 produk.
+- [x] Pastikan header menampilkan jumlah item keranjang.
+- [x] Tampilkan KPI dan tabel produk stok rendah di dashboard admin.
+
+## Fase 6 - Laporan Sederhana
+
+- [x] Buat `ReportController`.
+- [x] Buat route `/report`.
+- [x] Buat route `/report/export`.
+- [x] Buat view `report/index.php`.
+- [x] Buat filter laporan berdasarkan rentang tanggal.
+- [x] Tampilkan ringkasan omzet, transaksi, item terjual, dan rata-rata transaksi.
+- [x] Tampilkan agregasi penjualan harian.
+- [x] Tampilkan top 10 produk terlaris.
+- [x] Terapkan aturan admin semua transaksi, kasir transaksi miliknya.
+- [x] Tambahkan menu Laporan di sidebar.
+- [x] Implementasikan export laporan CSV.
 
 ## Acceptance Checklist
 
@@ -197,11 +234,13 @@ Gunakan checklist ini sebagai backlog implementasi. Selesaikan fase secara berur
 - [x] Kasir bisa login.
 - [x] User nonaktif tidak bisa login.
 - [x] Admin bisa mengelola produk.
+- [x] Admin bisa mengelola barcode produk.
 - [x] Admin bisa mengelola kategori.
 - [x] Admin bisa mengelola user.
 - [x] Admin bisa mengubah setting.
 - [x] Kasir tidak bisa membuka menu admin.
 - [x] Admin dan kasir bisa membuat transaksi.
+- [x] Admin dan kasir bisa menambahkan produk lewat scan barcode.
 - [x] Total transaksi dan kembalian benar.
 - [x] Riwayat transaksi tersimpan.
 - [x] Detail transaksi menampilkan snapshot nama dan harga produk.

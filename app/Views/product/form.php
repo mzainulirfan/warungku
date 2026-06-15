@@ -69,6 +69,34 @@
                         <?php endif ?>
                     </div>
 
+                    <div class="form-group form-group-span">
+                        <label class="form-label" for="barcode">Barcode</label>
+                        <input
+                            class="form-input<?= isset($errors['barcode']) ? ' is-invalid' : '' ?>"
+                            type="text"
+                            id="barcode"
+                            name="barcode"
+                            value="<?= esc(old('barcode', $product->barcode ?? '')) ?>"
+                            placeholder="Kosongkan untuk dibuat otomatis"
+                            maxlength="64"
+                            aria-invalid="<?= isset($errors['barcode']) ? 'true' : 'false' ?>"
+                            aria-describedby="<?= isset($errors['barcode']) ? 'barcode-error' : 'barcode-help' ?>"
+                        >
+                        <?php if (isset($errors['barcode'])): ?>
+                            <span class="form-error" id="barcode-error"><?= esc($errors['barcode']) ?></span>
+                        <?php endif ?>
+                        <span class="form-help" id="barcode-help">Bisa diisi dari barcode produk. Jika kosong, sistem membuat kode otomatis.</span>
+                        <button
+                            class="btn btn-outline btn-sm barcode-preview-button"
+                            type="button"
+                            data-barcode-preview
+                            data-barcode-url="<?= site_url('product/barcode-preview') ?>"
+                            data-barcode-input="barcode"
+                        >
+                            Preview Barcode
+                        </button>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label" for="price">Harga</label>
                         <input
@@ -152,6 +180,7 @@
                     <ul>
                         <li>Produk nonaktif tidak muncul di halaman kasir.</li>
                         <li>Stok kosong tidak dapat dijual.</li>
+                        <li>Barcode harus unik untuk scan di halaman POS.</li>
                         <li>Harga dan stok hanya menerima angka.</li>
                     </ul>
                 </div>

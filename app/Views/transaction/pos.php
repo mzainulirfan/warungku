@@ -44,10 +44,26 @@ $availableCategories = is_countable($categories) ? count($categories) : 0;
                 </div>
             </div>
             <div class="card-body padded-card-body">
+                <div class="pos-scan-box">
+                    <div class="form-group">
+                        <label class="form-label" for="barcode_scan">Scan Barcode</label>
+                        <input
+                            class="form-input"
+                            type="search"
+                            id="barcode_scan"
+                            placeholder="Scan barcode lalu Enter"
+                            autocomplete="off"
+                            data-barcode-scan
+                            data-barcode-url="<?= site_url('pos/barcode') ?>"
+                        >
+                        <span class="form-help">Produk langsung masuk keranjang jika barcode ditemukan.</span>
+                    </div>
+                    <div class="pos-scan-message" data-barcode-message hidden></div>
+                </div>
                 <form method="get" action="<?= site_url('pos') ?>" class="transaction-filter-form">
                     <div class="form-group">
                         <label class="form-label" for="q">Cari Produk</label>
-                        <input class="form-input" type="search" id="q" name="q" value="<?= esc($filters['q']) ?>" placeholder="Nama produk">
+                        <input class="form-input" type="search" id="q" name="q" value="<?= esc($filters['q']) ?>" placeholder="Nama produk atau barcode">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="category_id">Kategori</label>
@@ -100,6 +116,7 @@ $availableCategories = is_countable($categories) ? count($categories) : 0;
                                 data-add-product
                                 data-id="<?= esc((string) $product->id, 'attr') ?>"
                                 data-name="<?= esc($product->name, 'attr') ?>"
+                                data-barcode="<?= esc((string) $product->barcode, 'attr') ?>"
                                 data-price="<?= esc((string) $product->price, 'attr') ?>"
                                 data-stock="<?= esc((string) $product->stock, 'attr') ?>"
                             >

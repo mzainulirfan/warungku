@@ -490,6 +490,140 @@ svg {
     color: var(--text-muted);
 }
 
+.dashboard-hero {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 18px;
+    border-color: transparent;
+    padding: 20px;
+}
+
+.dashboard-hero-copy {
+    display: grid;
+    align-content: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.dashboard-hero-copy .summary-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.dashboard-hero-copy h2 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: 0;
+}
+
+.dashboard-hero-copy p {
+    max-width: 680px;
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.dashboard-hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.dashboard-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    align-items: start;
+    gap: 16px;
+}
+
+.dashboard-main-card,
+.dashboard-side-card {
+    overflow: hidden;
+}
+
+.dashboard-side {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+}
+
+.dashboard-stock-list,
+.dashboard-quick-actions {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+}
+
+.dashboard-stock-item,
+.quick-action-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: var(--bg-muted);
+    padding: 12px;
+}
+
+.dashboard-stock-item:hover,
+.quick-action-card:hover {
+    border-color: var(--border-strong);
+    background: var(--bg-soft);
+}
+
+.dashboard-stock-item span,
+.quick-action-card span {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.dashboard-stock-item strong,
+.quick-action-card strong {
+    overflow: hidden;
+    color: var(--text-primary);
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-stock-item small,
+.quick-action-card small {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.dashboard-stock-item em,
+.quick-action-card em {
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: #111827;
+    color: #ffffff;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 800;
+    padding: 4px 9px;
+}
+
+.dashboard-empty-note {
+    border-radius: var(--radius);
+    background: var(--bg-muted);
+    color: var(--text-muted);
+    padding: 16px;
+    text-align: center;
+}
+
 .btn {
     display: inline-flex;
     align-items: center;
@@ -917,6 +1051,65 @@ svg {
     gap: 16px;
 }
 
+.product-hero {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 18px;
+    border-color: transparent;
+    padding: 18px;
+}
+
+.product-hero-copy {
+    display: grid;
+    align-content: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.product-hero-copy .summary-label,
+.product-hero-stats span {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.product-hero-copy h3 {
+    margin: 0;
+    font-size: 24px;
+    letter-spacing: -0.03em;
+}
+
+.product-hero-copy p {
+    max-width: 680px;
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.product-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(100px, 1fr));
+    gap: 10px;
+    min-width: 230px;
+}
+
+.product-hero-stats div {
+    display: grid;
+    align-content: center;
+    gap: 6px;
+    border-radius: var(--radius);
+    background: var(--bg-muted);
+    padding: 14px;
+}
+
+.product-hero-stats strong {
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
 .product-summary-card {
     display: grid;
     gap: 8px;
@@ -949,6 +1142,40 @@ svg {
     gap: 16px;
 }
 
+.product-workbench {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.75fr);
+    gap: 0;
+    overflow: hidden;
+    border-color: transparent;
+}
+
+.product-workbench-main,
+.product-workbench-side {
+    min-width: 0;
+}
+
+.product-workbench-side {
+    background: var(--bg-muted);
+}
+
+.product-section-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px 0;
+}
+
+.product-section-heading p {
+    margin: 2px 0 0;
+    color: var(--text-muted);
+}
+
+.product-import-heading {
+    align-items: center;
+}
+
 .product-tool-card {
     height: 100%;
 }
@@ -959,7 +1186,7 @@ svg {
 
 .product-filter-form {
     display: grid;
-    grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px) auto;
+    grid-template-columns: minmax(220px, 1fr) minmax(160px, 220px) minmax(150px, 190px) auto;
     align-items: end;
     gap: 14px;
 }
@@ -1022,6 +1249,61 @@ svg {
     color: #ffffff;
     font-size: 28px;
     font-weight: 800;
+}
+
+.barcode-preview {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    border-radius: var(--radius);
+    background: var(--bg-muted);
+    padding: 14px;
+}
+
+.barcode-preview svg {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    stroke: none;
+}
+
+.barcode-preview strong {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-align: center;
+}
+
+.barcode-preview-button {
+    justify-self: start;
+    margin-top: 2px;
+}
+
+.barcode-preview-modal .confirm-modal__panel {
+    max-width: 520px;
+}
+
+.barcode-preview-modal__body {
+    margin-top: 14px;
+}
+
+.print-barcode-label {
+    display: none;
+}
+
+.print-barcode-label__code {
+    display: grid;
+    gap: 6px;
+    justify-items: center;
+}
+
+.print-barcode-label__code svg {
+    display: block;
+    width: 100%;
+    max-width: 72mm;
+    height: auto;
+    stroke: none;
 }
 
 .product-form-tips ul {
@@ -1162,6 +1444,19 @@ svg {
     font-size: 12px;
 }
 
+.product-cell .barcode-text {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    letter-spacing: 0.02em;
+}
+
+.product-state {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
 .user-cell {
     display: flex;
     align-items: center;
@@ -1285,6 +1580,28 @@ svg {
 .pos-toolbar {
     border-color: transparent;
     overflow: hidden;
+}
+
+.pos-scan-box {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.pos-scan-message {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-muted);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 12px;
+}
+
+.pos-scan-message[data-type="error"] {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+    color: #111827;
 }
 
 .pos-filter {
@@ -1864,13 +2181,35 @@ svg {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .dashboard-hero,
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-hero {
+        flex-direction: column;
+    }
+
+    .dashboard-hero-actions {
+        justify-content: flex-start;
+    }
+
     .content-grid-sidebar {
         grid-template-columns: 1fr;
     }
 
     .product-tools,
+    .product-workbench,
     .product-form {
         grid-template-columns: 1fr;
+    }
+
+    .product-hero {
+        flex-direction: column;
+    }
+
+    .product-hero-stats {
+        min-width: 0;
     }
 
     .product-filter-form,
@@ -1952,8 +2291,32 @@ svg {
         grid-template-columns: 1fr;
     }
 
+    .dashboard-hero-actions,
+    .dashboard-hero-actions .btn,
+    .dashboard-hero-actions .date-pill {
+        width: 100%;
+    }
+
+    .dashboard-hero-actions .date-pill {
+        justify-content: center;
+    }
+
+    .dashboard-stock-item,
+    .quick-action-card {
+        align-items: flex-start;
+    }
+
     .product-overview {
         grid-template-columns: 1fr;
+    }
+
+    .product-hero-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .product-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .transaction-overview {
@@ -2086,6 +2449,12 @@ svg {
         display: block;
     }
 
+    .responsive-table .product-state {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        white-space: normal;
+    }
+
     .responsive-table .table-actions {
         display: flex;
         flex-wrap: wrap;
@@ -2149,6 +2518,16 @@ svg {
         visibility: visible !important;
     }
 
+    body.printing-barcode-label .print-receipt,
+    body.printing-barcode-label .print-receipt * {
+        visibility: hidden !important;
+    }
+
+    body.printing-barcode-label .print-barcode-label,
+    body.printing-barcode-label .print-barcode-label * {
+        visibility: visible !important;
+    }
+
     .print-receipt {
         position: absolute;
         top: 0;
@@ -2159,6 +2538,48 @@ svg {
         font-family: "Courier New", Courier, monospace;
         font-size: 12px;
         line-height: 1.35;
+    }
+
+    body.printing-barcode-label .print-barcode-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: grid;
+        width: 80mm;
+        gap: 4px;
+        color: #000000;
+        font-family: Arial, sans-serif;
+        justify-items: center;
+        text-align: center;
+    }
+
+    body.printing-barcode-label .print-barcode-label h1 {
+        margin: 0;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    body.printing-barcode-label .print-barcode-label p {
+        margin: 0;
+        max-width: 78mm;
+        overflow: hidden;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    body.printing-barcode-label .print-barcode-label strong {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+    }
+
+    body.printing-barcode-label .print-barcode-label small {
+        font-size: 10px;
+        font-weight: 700;
     }
 
     .sidebar,
